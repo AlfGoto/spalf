@@ -148,7 +148,7 @@ See AI_SPALF.md for detailed directory structures within each.
 
 ## Quick Reference
 
-**Frontend Tech**: Next.js, shadcn/ui, Tailwind CSS, TypeScript
-**Backend Tech**: AWS CDK, Lambda, DynamoDB, Cognito, Effect
+**Frontend Tech**: Next.js, shadcn/ui, Tailwind CSS, TypeScript, openapi-fetch
+**Backend Tech**: AWS CDK, Lambda, DynamoDB, Cognito, Effect, Hono/openapi-fetch
 
 **Current Phase**: Check PROGRESS.md to see where we are in the implementation phases.
