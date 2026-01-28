@@ -1,0 +1,11 @@
+# Redocly configuration for OpenAPI type generation
+# Update the API URL after CDK deployment
+
+apis:
+  main:
+    root: https://543n6h955k.execute-api.eu-central-1.amazonaws.com/v1/api/doc
+    x-openapi-ts:
+      output: ./src/shared/types/api.ts
+    # After deployment, replace with actual API Gateway URL:
+    # root: https://xxxxx.execute-api.region.amazonaws.com/prod/api/doc
+

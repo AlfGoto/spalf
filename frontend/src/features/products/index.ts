@@ -1,0 +1,6 @@
+export { ProductsPage } from "./components/products-page"
+export { ProductList } from "./components/product-list"
+export { ProductForm } from "./components/product-form"
+export { DeleteProductDialog } from "./components/delete-product-dialog"
+export * from "./types"
+export * from "./api"
