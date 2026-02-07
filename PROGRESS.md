@@ -1,31 +1,276 @@
-Itération = 0
+Itération = 13
 
 ## Completed
-<!-- Nothing completed yet -->
+
+- [x] Phase 1: Set up backend infrastructure (iteration 1)
+  - [x] Initialize CDK project in backend/
+  - [x] Create main stack (spalf.ts) with DynamoDB table, Cognito user pools, API Gateway
+  - [x] Define DynamoDB table with dynamodb-toolbox (single table design with GSIs)
+  - [x] Set up base Lambda function structure with Effect-based routing
+  - [x] Create all entity schemas: Spa, Employee, Room, Product, Service, Client, Reservation, Closure
+  - [x] Implement Employee CRUD API endpoints as initial example
+- [x] Phase 1: Set up frontend project (iteration 2)
+  - [x] Initialize Next.js project in frontend/
+  - [x] Configure Tailwind CSS (v4)
+  - [x] Set up shadcn/ui (new-york style)
+  - [x] Create folder structure (app, features, package, shared)
+  - [x] Set up dashboard layout with navigation
+  - [x] Create placeholder pages for all features (employees, rooms, products, services, reservations, clients, settings)
+  - [x] Set up auth layout and login/register pages
+  - [x] Configure openapi-fetch for type-safe API client
+  - [x] Add shared utilities (formatDate, formatTime, formatPrice)
+- [x] Phase 1: Complete frontend authentication with Cognito (iteration 3)
+  - [x] Install aws-amplify and @aws-amplify/auth packages
+  - [x] Create auth configuration (src/package/auth/config.ts)
+  - [x] Create auth service with Cognito operations (sign-in, sign-up, confirm, sign-out)
+  - [x] Create AuthContext and AuthProvider for app-wide auth state
+  - [x] Create useAuth and useUser hooks
+  - [x] Update LoginPage with Cognito sign-in functionality
+  - [x] Update RegisterPage with Cognito sign-up functionality
+  - [x] Create VerifyPage for email verification flow
+  - [x] Update API client with auth middleware (auto-injects ID token)
+  - [x] Add route protection to dashboard layout (redirect to login if not authenticated)
+  - [x] Add redirect from auth pages when already authenticated
+  - [x] Create .env.example with required environment variables
+- [x] Phase 2: Complete CRUD APIs for core entities (iteration 4)
+  - [x] Implement Rooms CRUD API (list, create, get, update, delete)
+  - [x] Implement Products CRUD API (list, create, get, update, delete)
+  - [x] Implement Services CRUD API (list, create, get, update, delete)
+  - [x] Implement Clients CRUD API (list, create, get, update, delete)
+  - [x] Register all routes in API index.ts
+
+- [x] Phase 2: Core Features - Frontend Management UIs (iteration 5)
+  - [x] Create shared types for frontend entities (src/shared/types/entities.ts)
+  - [x] Employee management UI (list, create, edit, delete)
+  - [x] Room management UI
+  - [x] Product management UI
+  - [x] Client management UI
+  - [x] Service management UI (without composition)
+
+- [x] Phase 3: Reservations (iteration 6)
+  - [x] Backend: Reservations CRUD API (list, create, get, update, delete)
+  - [x] Backend: Calendar endpoint for date range queries
+  - [x] Backend: Availability checking (employee schedule, room capacity, closures)
+  - [x] Backend: Conflict detection for overlapping reservations
+  - [x] Frontend: useReservations hook with calendar support
+  - [x] Frontend: ReservationCalendar component (day/week views)
+  - [x] Frontend: ReservationForm dialog for create/edit
+  - [x] Frontend: ReservationDetails dialog for viewing
+  - [x] Frontend: Full ReservationsPage with filtering by employee/room
+
+- [x] Phase 4: Advanced Features (iteration 7)
+  - [x] Exceptional closures CRUD API (backend/src/functions/api/routes/closures.ts)
+  - [x] Exceptional closures management UI integrated into Settings page
+  - [x] Service composition UI in ServiceForm (select services to include in packages)
+  - [x] Cancellation deadline enforcement (update/delete reservation checks deadline)
+  - [x] Rescheduling policy enforcement (services can disallow rescheduling)
+  - [x] Preparation and recovery time visual display in calendar (iteration 8)
+
+- [x] Phase 5: Integrations (iteration 9)
+  - [x] Create Integration entity for managing external system tokens
+  - [x] Add crypto utilities for token hashing and webhook signatures (src/core/shared/crypto.ts)
+  - [x] Create integration-api Lambda function with routes (src/functions/integration-api/)
+  - [x] Implement POST /integration/webhook endpoint (receive webhooks from external systems)
+  - [x] Implement GET /integration/reservations endpoint (list reservations with filters)
+  - [x] Implement POST /integration/reservations endpoint (create reservation with inline client)
+  - [x] Implement PUT /integration/reservations/:id endpoint (update reservation)
+  - [x] Implement POST /integration/verify-hash endpoint (verify webhook signatures)
+  - [x] Create trigger Lambda for outbound webhooks (src/functions/trigger/)
+  - [x] Add EventBridge event bus for webhook dispatch
+  - [x] Add Integrations CRUD API to frontend API (/api/integrations) for managing integrations
+  - [x] Update CDK stack with Integration API Gateway and Trigger Lambda
+
+- [x] Phase 6: Polish & Testing (partial - iteration 10)
+  - [x] Frontend: Create integration management UI in Settings page
+    - [x] Add Integration types to entities.ts (IntegrationPermission, WebhookEventType, Integration, CreateIntegrationInput, UpdateIntegrationInput)
+    - [x] Create useIntegrations hook with full CRUD and regenerateSecret operations
+    - [x] Create IntegrationForm component with permissions and webhook events checkboxes
+    - [x] Create IntegrationList component with edit/delete/regenerate actions
+    - [x] Create SecretDialog component to display one-time secret tokens with copy functionality
+    - [x] Add Checkbox UI component (shadcn/ui pattern with @radix-ui/react-checkbox)
+    - [x] Integrate all components into SettingsPage
+
+- [x] Phase 6: Unit Tests for Core Shared Modules (iteration 11)
+  - [x] Set up Jest configuration for backend (jest.config.js)
+  - [x] Add isolatedModules to tsconfig.json for ts-jest compatibility
+  - [x] Add unit tests for utilities (utils.test.ts) - 35 tests
+    - generateId, buildKey, parseKey
+    - formatDate, formatTime
+    - timeToMinutes, minutesToTime
+    - timeRangesOverlap, addMinutesToTime, roundToSlot
+    - getDayOfWeek
+    - isWithinCancellationDeadline, getHoursUntilReservation
+  - [x] Add unit tests for crypto functions (crypto.test.ts) - 28 tests
+    - generateSecretToken, hashSecret, verifySecret
+    - createWebhookSignature, verifyWebhookSignature
+    - signWebhookPayload, verifySignedWebhook
+  - [x] Add unit tests for error classes (errors.test.ts) - 20 tests
+    - All error types: SpalfError, NotFoundError, ValidationError, ConflictError, UnauthorizedError, ForbiddenError, DatabaseError, BusinessRuleError
+    - errorToResponse helper function
+  - [x] Add unit tests for events module (events.test.ts) - 10 tests
+    - emitWebhookEvent with mocked EventBridge client
+    - emitReservationEvent, emitClientEvent
+  - [x] Achieved 100% coverage for all shared modules (crypto.ts, errors.ts, events.ts, utils.ts)
+
+- [x] Phase 6: Domain Logic Tests (iteration 12)
+  - [x] Create domain layer for reservation business logic (src/core/domain/reservation/index.ts)
+    - Extract pure functions from route handlers for testability
+    - validateCreateReservationInput - input validation
+    - checkEmployeeAvailability - schedule and conflict checking
+    - checkRoomAvailability - capacity and conflict checking
+    - checkClosureConflict - closure overlap detection
+    - checkCancellationPolicy - deadline enforcement
+    - checkReschedulingPolicy - reschedule permission checks
+    - calculateReservationEndTime - duration calculation
+    - buildReservationGSIKeys - key generation helper
+  - [x] Add comprehensive unit tests (reservation.test.ts) - 56 tests
+    - Input validation (11 tests)
+    - Employee availability (10 tests)
+    - Room availability (9 tests)
+    - Closure conflicts (8 tests)
+    - Cancellation policy (4 tests)
+    - Rescheduling policy (6 tests)
+    - End time calculation (5 tests)
+    - GSI key building (2 tests)
+  - [x] Achieved 100% coverage for domain module (statements, branches, functions, lines)
+
+- [x] Phase 6: API Integration Tests (iteration 13)
+  - [x] Create test utilities for mocking DynamoDB Toolbox (src/functions/api/__tests__/test-utils.ts)
+    - createMockEvent - helper to create mock API Gateway events with auth context
+    - createMockContext - helper to create mock Lambda context
+    - parseBody - helper to parse response bodies
+  - [x] Add integration tests for Employees API (employees.test.ts) - 17 tests
+    - GET /api/employees - list employees (3 tests)
+    - POST /api/employees - create employee (6 tests)
+    - GET /api/employees/:id - get employee by id (2 tests)
+    - PUT /api/employees/:id - update employee (2 tests)
+    - DELETE /api/employees/:id - delete employee (2 tests)
+    - Route not found handling (2 tests)
+  - [x] Add integration tests for Rooms API (rooms.test.ts) - 14 tests
+    - Full CRUD coverage with validation testing
+    - Capacity validation (min/max capacity rules)
+  - [x] Add integration tests for Clients API (clients.test.ts) - 15 tests
+    - Full CRUD coverage with validation testing
+    - Email format validation
+  - [x] Updated Jest config to include functions in coverage reports
+  - [x] Total tests: 195 (up from 149)
+
+- [x] Fix spaId in JWT claims (iteration 13)
+  - [x] Add custom:spaId attribute to Cognito User Pool
+  - [x] Create post-confirmation Lambda trigger (src/functions/auth/post-confirmation.ts)
+    - Auto-creates a spa for new users on email confirmation
+    - Sets custom:spaId attribute on the user via AdminUpdateUserAttributes
+  - [x] Update CDK stack with post-confirmation trigger and IAM permissions
+  - [x] Update frontend AuthUser type to include spaId
+  - [x] Update frontend auth-service to read custom:spaId from user attributes
 
 ## In Progress
-<!-- No work in progress -->
+
+(none)
 
 ## Next Up
-- [ ] Phase 1: Set up backend infrastructure
-  - [ ] Initialize CDK project in backend/
-  - [ ] Create main stack (spalf.ts)
-  - [ ] Define DynamoDB table with dynamodb-toolbox
-  - [ ] Set up base Lambda function structure
-- [ ] Phase 1: Set up frontend project
-  - [ ] Initialize Next.js project in frontend/
-  - [ ] Configure Tailwind CSS
-  - [ ] Set up shadcn/ui
-  - [ ] Create folder structure (app, features, package, shared)
-- [ ] Phase 1: Implement authentication (Cognito)
-  - [ ] Create Cognito User Pool for spa users
-  - [ ] Create Cognito User Pool for integrations
-  - [ ] Set up API Gateway authorizers
-  - [ ] Implement frontend auth flow
+
+- [ ] Phase 6: Polish & Testing (continued)
+  - [ ] Add integration tests for Services API
+  - [ ] Add integration tests for Reservations API (complex - includes availability checking)
+  - [ ] Add integration tests for Closures API
+  - [ ] Add integration tests for Integrations API
+  - [ ] Performance optimization and code cleanup
+  - [ ] Documentation
+- [ ] Deploy and test with real Cognito credentials
 
 ## Technical Debt / Improvements
-<!-- Track code that needs refactoring or improvements for future iterations -->
+
+- [ ] Fix CDK deprecation warning: use `pointInTimeRecoverySpecification` instead of `pointInTimeRecovery`
+- [ ] Add unit tests for entities and domain logic
+- [ ] Add integration tests for API endpoints
+- [ ] Extract reusable CRUD hook factory (hooks follow identical pattern, could be generalized)
+- [ ] Move DeleteConfirmDialog to shared package (currently in employee-management)
+- [x] Get SPA_ID from auth context instead of hardcoded value (iteration 13)
 
 ## Notes
-- Project starting from scratch
-- Follow implementation phases defined in AI_SPALF.md
+
+- Backend infrastructure is ready for development
+- Using single-table DynamoDB design with 2 GSIs (GSI1 for spa queries, GSI2 for date-based queries)
+- Effect library integrated for functional error handling
+- All entities use `computeKey` pattern for automatic PK/SK generation
+- Employee API implemented as template for other entity APIs
+- Frontend structure follows spec: app/ for routing only, features/ for page components, package/ for shadcn UI, shared/ for types/api/utils
+- UI components moved to `@/package/ui` (update components.json alias if adding more shadcn components)
+- openapi-fetch installed; generate types with: `npx openapi-typescript <api-schema-url> -o src/shared/types/api.d.ts`
+- Black & white theme by default (no dark mode), colors only for accents/CTAs as per spec
+- **Auth flow complete**: Frontend auth with Cognito implemented using AWS Amplify v6
+  - Auth package at `src/package/auth/` with AuthProvider, hooks, and service
+  - API client automatically injects auth token via middleware
+  - Protected routes redirect to login, auth pages redirect to dashboard if authenticated
+  - To test: copy `.env.example` to `.env.local` and fill in Cognito values from CDK outputs after deployment
+  - **Spa assignment flow**: When a user confirms their email, a post-confirmation Lambda trigger auto-creates a spa and sets `custom:spaId` on their Cognito profile. The JWT includes this claim, and the API extracts it for all requests.
+- **All core CRUD APIs implemented** (iteration 4): Employees, Rooms, Products, Services, Clients
+  - Each follows the same Effect-based pattern with validation, error handling
+  - All use DynamoDB Toolbox with GSI1 for spa-scoped queries
+  - Routes: GET/POST /api/{entity}, GET/PUT/DELETE /api/{entity}/:id
+- **All core management UIs implemented** (iteration 5): Employees, Rooms, Products, Clients, Services
+  - Each feature follows the same pattern: hooks/use{Entity}.ts, components/{Entity}Form.tsx, components/{Entity}Table.tsx
+  - Shared types defined in src/shared/types/entities.ts mirroring backend entities
+  - DeleteConfirmDialog component shared from employee-management (can be moved to shared if needed)
+  - All forms use react-hook-form + zod for validation
+  - Tables show data with dropdown menus for edit/delete actions
+  - API_BASE_URL exported from shared/api for hooks to use
+  - Using hardcoded SPA_ID="demo-spa" for now (will come from auth context later)
+- **Reservations system implemented** (iteration 6):
+  - Backend: Full CRUD API with availability checking in `backend/src/functions/api/routes/reservations.ts`
+  - Availability checks: employee schedule, room concurrent limit, spa closures, time conflicts
+  - Uses GSI1 with `RESERVATION#<date>#<time>#<id>` pattern for efficient date-based queries
+  - Frontend: Week/day calendar view with filter support in `frontend/src/features/reservation-management/`
+  - Calendar shows reservations color-coded by status (confirmed, pending, completed, cancelled)
+  - Click time slot to create new reservation, click reservation to view details
+  - Form validates service->employee/room associations
+- **Phase 4 Advanced Features implemented** (iteration 7):
+  - Closures CRUD API at `/api/closures` - supports date range filtering, partial closures (time-based)
+  - Closures UI integrated into Settings page with upcoming/past closures grouping
+  - Service composition: ServiceForm now has "Composed Service (Package)" checkbox to select included services
+  - ServiceTable shows "Package" badge and included services count for composed services
+  - Cancellation deadline enforced: reservations cannot be cancelled/deleted/rescheduled if within the deadline
+  - Rescheduling policy enforced: services with `canBeRescheduled: false` block date/time changes
+  - Added `isWithinCancellationDeadline` and `getHoursUntilReservation` utility functions
+- **Preparation & Recovery Time Display implemented** (iteration 8):
+  - Calendar now shows hatched/striped blocks before and after reservations
+  - Preparation block (135° stripes) appears above the main reservation block
+  - Recovery block (45° stripes) appears below the main reservation block
+  - Blocks are clipped if they extend beyond calendar bounds (8:00-20:00)
+  - Tooltips show "Preparation: X min" / "Recovery: X min" on hover
+  - Legend updated with "Prep/Recovery" indicator
+- **Phase 5 Integrations implemented** (iteration 9):
+  - Integration Entity at `src/core/database/entities/integration.entity.ts` - stores integration config, secret hash, webhook URL, permissions
+  - Crypto utilities at `src/core/shared/crypto.ts` - token generation, hashing, webhook signatures (HMAC-SHA256)
+  - Integration API at `src/functions/integration-api/` - separate Lambda for external system access
+    - Token-based auth: `Bearer <spaId>:<integrationId>:<secret>`
+    - Permission-based access control (reservations:read, reservations:write, etc.)
+    - Routes: webhook receiver, reservations CRUD, hash verification
+  - Frontend API integrations routes at `src/functions/api/routes/integrations.ts`
+    - Spa managers can create/list/update/delete integrations
+    - Secret token shown only once on creation (stored as hash)
+    - Regenerate secret endpoint for rotating credentials
+  - Trigger Lambda at `src/functions/trigger/` - sends outbound webhooks via EventBridge
+  - EventBridge bus "spalf-webhooks" for async webhook dispatch
+  - Events helper at `src/core/shared/events.ts` - emit events from other Lambdas
+  - CDK updated with Integration API Gateway (no Cognito auth, uses custom token auth) and Trigger Lambda
+  - Reservation entity updated: employeeId/roomId now optional, added externalId and integration tracking fields
+- **Integration Management UI implemented** (iteration 10):
+  - Settings page now includes "External Integrations" section
+  - Full CRUD: list, create, edit, delete integrations
+  - Permissions UI: checkboxes for API permissions (reservations:read/write, clients:read/write, etc.)
+  - Webhook configuration: URL and event type checkboxes
+  - Secret token flow: shown once after creation in SecretDialog, with copy buttons
+  - Regenerate secret functionality with confirmation dialog
+  - Active/inactive toggle for disabling integrations
+- Unit and integration tests added in iterations 11-13
+  - Run tests with: `cd backend && npm test`
+  - Run with coverage: `cd backend && npm test -- --coverage`
+  - 195 tests total (149 unit + 46 integration)
+  - 100% coverage for shared and domain modules
+  - Integration tests mock DynamoDB Toolbox operations at module level
+- Domain layer created at `src/core/domain/` with pure business logic functions
+  - Reservation domain at `src/core/domain/reservation/` with availability checking, policy enforcement
+  - These pure functions are extracted from route handlers for testability
+- Next agent should continue with integration tests for API endpoints
